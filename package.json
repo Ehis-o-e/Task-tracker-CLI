@@ -1,0 +1,24 @@
+{
+  "name": "task-tracker(cli)",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ehis-o-e/Task-tracker-CLI.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Ehis-o-e/Task-tracker-CLI/issues"
+  },
+  "homepage": "https://github.com/Ehis-o-e/Task-tracker-CLI#readme",
+  "devDependencies": {
+    "@types/node": "^24.2.0"
+  }
+}
