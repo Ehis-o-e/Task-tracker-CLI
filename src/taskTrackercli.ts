@@ -1,10 +1,6 @@
-import express from 'express';
+#!/usr/bin/env node
 import fs from 'fs';
 import { argv } from 'process';
-
-
-const app = express();
-const port = 3000;
 
 
 type Task = {
@@ -74,7 +70,7 @@ function main(){
         
         case 'update':
                 if (!task || !correction){
-                    console.log('Please provide the ID and update')
+                    console.log('Please provide the ID and updated task')
                     process.exit(1)
                 }
                 const taskId = parseInt(task!)
@@ -180,3 +176,5 @@ function main(){
 }
 
 main()
+
+//next time make a function to reduce repetition

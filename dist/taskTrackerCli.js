@@ -1,8 +1,9 @@
-import { argv } from 'process';
+#!/usr/bin/env node
 import fs from 'fs';
-function loadJSONFile(fileName) {
+import { argv } from 'process';
+function loadJsonFile(fileName) {
     if (!fs.existsSync(fileName)) {
-        console.log('you dont have a file');
+        console.log('you do not have this file');
         return [];
     }
     try {
@@ -13,24 +14,24 @@ function loadJSONFile(fileName) {
         return [];
     }
 }
-function saveJSONfile(fileName, tasks) {
+function saveJsonFile(fileName, tasks) {
     const newData = JSON.stringify(tasks);
     fs.writeFileSync(fileName, newData, 'utf-8');
 }
-function generateUniqueId(tasks) {
+function generateId(tasks) {
     if (tasks.length === 0) {
-        return 1; // Start with ID 1 if no tasks exist
+        return 1;
     }
-    // Get the highest existing ID and add 1
     const maxId = Math.max(...tasks.map(task => task.id));
     return maxId + 1;
 }
 function main() {
     const command = argv[2];
     const task = argv[3];
-    const tasks = loadJSONFile('tasks.json');
+    const correction = argv[4];
+    const tasks = loadJsonFile('tasks.json');
     if (tasks.length === 0 && command !== 'add') {
-        console.log("There is no task to do currently");
+        console.log('there is no task currently');
     }
     switch (command) {
         case 'add':
@@ -39,51 +40,111 @@ function main() {
                 process.exit(1);
             }
             const newTask = {
-                id: generateUniqueId(tasks),
-                task: task,
-                status: "pending",
-                date: new Date(),
+                id: generateId(tasks),
+                description: task,
+                status: 'to-do',
+                createdAt: new Date(),
+                updatedAt: new Date()
             };
             tasks.push(newTask);
-            console.log(`Added task: ${task}`);
+            console.log(`Task added successfully: ID:${newTask.id}`);
             break;
-        case 'list':
-            tasks.forEach(t => console.log(`${t.id} ${t.task} ${t.status} ${t.date}`));
-            break;
-        case 'delete':
-            if (!task) {
-                console.log("Provide an ID");
+        case 'update':
+            if (!task || !correction) {
+                console.log('Please provide the ID and updated task');
                 process.exit(1);
             }
             const taskId = parseInt(task);
             const taskIndex = tasks.findIndex(t => t.id === taskId);
             if (taskIndex === -1) {
-                console.log(`The ID ${taskId} is not found`);
+                console.log('Task not found, try again');
             }
             else {
-                tasks.splice(taskIndex, 1);
-                console.log(`The task with ${taskId} has been removed`);
+                tasks[taskIndex].description = correction;
+                tasks[taskIndex].updatedAt = new Date();
+                console.log('Task has been updated');
             }
             break;
-        case 'complete':
+        case 'list':
+            switch (task) {
+                case undefined:
+                case '':
+                    tasks.forEach(t => {
+                        console.log(`${t.id} ${t.description} ${t.status} ${t.createdAt} ${t.updatedAt}`);
+                    });
+                    break;
+                case 'done':
+                    const done = tasks.filter(t => t.status === 'done');
+                    done.forEach(t => {
+                        console.log(`${t.id} ${t.description} ${t.status} ${t.createdAt} ${t.updatedAt}`);
+                    });
+                    break;
+                case 'to-do':
+                    const todo = tasks.filter(t => t.status === 'to-do');
+                    todo.forEach(t => {
+                        console.log(`${t.id} ${t.description} ${t.status} ${t.createdAt} ${t.updatedAt}`);
+                    });
+                    break;
+                case 'in-progress':
+                    const inprogress = tasks.filter(t => t.status === 'in-progress');
+                    inprogress.forEach(t => {
+                        console.log(`${t.id} ${t.description} ${t.status} ${t.createdAt} ${t.updatedAt}`);
+                    });
+                    break;
+                default:
+                    console.log('Invalid input: Input done, to-do or in-progress');
+            }
+            break;
+        case 'mark-done':
             if (!task) {
-                console.log("Provide an ID");
+                console.log('Please provide an ID');
                 process.exit(1);
             }
             const completeId = parseInt(task);
             const completeIndex = tasks.findIndex(t => t.id === completeId);
             if (completeIndex === -1) {
-                console.log(`The ID ${completeId} is not found`);
+                console.log('Task not found try again');
             }
             else {
-                tasks[completeIndex].status = "completed";
-                console.log(`Task ${completeId} has been completed`);
+                tasks[completeIndex].status = 'done';
+            }
+            console.log(`selected task is completed`);
+            break;
+        case 'mark-in-progress':
+            if (!task) {
+                console.log('Please provide an ID');
+                process.exit(1);
+            }
+            const progressId = parseInt(task);
+            const progressIndex = tasks.findIndex(t => t.id === progressId);
+            if (progressIndex === -1) {
+                console.log('Task not found try again');
+            }
+            else {
+                tasks[progressIndex].status = 'done';
+            }
+            console.log(`selected task is completed`);
+            break;
+        case 'delete':
+            if (!task) {
+                console.log('Please provide an ID');
+                process.exit(1);
+            }
+            const deleteId = parseInt(task);
+            const deleteIndex = tasks.findIndex(t => t.id === deleteId);
+            if (deleteIndex === -1) {
+                console.log('Task does not exist');
+            }
+            else {
+                tasks.splice(deleteIndex, 1);
+                console.log('Task has been deleted');
             }
             break;
         default:
             console.log('invalid command, try again');
     }
-    saveJSONfile("tasks.json", tasks);
+    saveJsonFile('tasks.json', tasks);
 }
 main();
+//next time make a function to reduce repetition
 //# sourceMappingURL=taskTrackerCli.js.map

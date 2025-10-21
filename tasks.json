@@ -1,1 +1,1 @@
-[{"id":1,"task":"new","status":"pending","date":"2025-08-08T02:14:03.521Z"}]
+[{"id":1,"description":"Go out for lunch","status":"done","createdAt":"2025-10-20T23:23:30.052Z","updatedAt":"2025-10-20T23:23:30.052Z"},{"id":2,"description":"Buy grocies on the way back","status":"to-do","createdAt":"2025-10-20T23:24:08.751Z","updatedAt":"2025-10-20T23:24:08.751Z"}]
